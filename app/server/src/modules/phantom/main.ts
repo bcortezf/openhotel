@@ -45,6 +45,9 @@ import { log } from "shared/utils/log.utils.ts";
         executablePath +=
           "/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing";
         break;
+      case "windows":
+        executablePath += "/chrome.exe";
+        break;
     }
 
     await new Promise((r) => setTimeout(r, 5000));
