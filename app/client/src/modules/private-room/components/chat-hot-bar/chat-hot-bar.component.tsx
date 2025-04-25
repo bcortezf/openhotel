@@ -16,6 +16,7 @@ import {
   KeyboardEventExtended,
   NineSliceSpriteComponent,
   SpriteTextInputComponent,
+  useApplication,
   useEvents,
 } from "@openhotel/pixi-components";
 import { HotBarItemsComponent } from "shared/components";
@@ -40,7 +41,8 @@ export const ChatHotBarComponent: React.FC<Props> = ({
 }) => {
   const { on } = useEvents();
   const { emit } = useProxy();
-  const { lastPositionData } = usePrivateRoom();
+  const { scale } = useApplication();
+  const { lastPositionData, absoluteRoomPosition } = usePrivateRoom();
 
   const [focusInputNow, setFocusInputNow] = useState<number>(null);
 
@@ -95,6 +97,7 @@ export const ChatHotBarComponent: React.FC<Props> = ({
 
         localStorage.setItem(STORAGE_KEY, JSON.stringify(historyRef.current));
 
+        //---- /set ------------------------------------------------------------
         if (
           message.startsWith("/set") &&
           message.split(" ").length === 2 &&
@@ -103,6 +106,11 @@ export const ChatHotBarComponent: React.FC<Props> = ({
           message += ` ${lastPositionData.position.x} ${lastPositionData.position.z} ${lastPositionData.direction}`;
           if (lastPositionData.wallPosition)
             message += ` ${lastPositionData.wallPosition.x} ${lastPositionData.wallPosition.y}`;
+        }
+
+        //---- /photo ------------------------------------------------------------
+        if (message.startsWith("/photo")) {
+          message += ` 0 0 ${absoluteRoomPosition.x} ${absoluteRoomPosition.y} 3`;
         }
 
         emit(Event.MESSAGE, { message });
@@ -124,7 +132,7 @@ export const ChatHotBarComponent: React.FC<Props> = ({
         emit(Event.TYPING_END, {});
       }, 800);
     },
-    [emit, setValue, lastPositionData],
+    [emit, setValue, lastPositionData, maxWidth, absoluteRoomPosition, scale],
   );
 
   const onFocus = useCallback(() => {

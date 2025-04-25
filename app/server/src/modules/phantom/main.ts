@@ -394,7 +394,6 @@ const room = {
   let $envs: Envs;
   let executablePath: string = "";
   let browser;
-  let page;
 
   const load = async ({ envs, config }: WorkerProps) => {
     $config = config;
@@ -444,8 +443,11 @@ const room = {
         "--enable-unsafe-swiftshader",
       ],
     });
-    page = await browser.newPage();
-    await page.setViewport({ width: 256, height: 256 });
+  };
+
+  const capturePrivateRoom = async ({ id, room, position, size }) => {
+    const page = await browser.newPage();
+    await page.setViewport({ width: size.width, height: size.height });
     await page.setRequestInterception(true);
 
     page.on("console", (msg) => {
@@ -459,12 +461,12 @@ const room = {
       // console.log(req.url());
       await req.continue();
     });
-  };
 
-  const capturePrivateRoom = async ({ id, room }) => {
-    // serverWorker.emit(id)
+    const url = new URL("http://localhost:1994/phantom");
+    url.searchParams.append("posX", position.x);
+    url.searchParams.append("posY", position.y);
 
-    await page.goto("http://localhost:1994/phantom", {});
+    await page.goto(url.href, {});
 
     await page.evaluate((data) => {
       localStorage.setItem("room", JSON.stringify(data));
@@ -486,6 +488,7 @@ const room = {
     } else {
       console.error("canvas not found");
     }
+    page.close();
   };
 
   serverWorker.on("start", load);

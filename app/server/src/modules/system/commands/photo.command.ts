@@ -7,14 +7,25 @@ import {
 
 export const photoCommand: Command = {
   command: "photo",
-  // usages: ["<x> <y> <zoom>"],
-  usages: [],
+  usages: ["<x> <y> <absX> <absY> <scale>"],
+  // usages: [],
   role: CommandRoles.OP,
   description: "command.photo.description",
   func: async ({ user, args }) => {
     const room = (await System.game.rooms.get(
       user.getRoom(),
     )) as PrivateRoomMutable;
-    System.phantom.capture(await room.getObjectWithUsers());
+    const position = {
+      x: args[2],
+      y: args[3],
+    };
+    System.phantom.capture({
+      room: await room.getObjectWithUsers(),
+      position,
+      size: {
+        width: 256,
+        height: 256,
+      },
+    });
   },
 };
