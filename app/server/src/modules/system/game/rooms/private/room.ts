@@ -75,6 +75,14 @@ export const getRoom =
         },
       });
 
+      // console.log({
+      //   ...getObject(),
+      //   users: getUsers()
+      //     .map((accountId) => System.game.users.get({ accountId }).getObject())
+      //     .map(mapUser),
+      //   ownerUsername: await getOwnerUsername(),
+      // });
+
       $user.setRoom(room.id);
       //Add user to "room" internally
       System.proxy.$emit(ProxyEvent.$ADD_ROOM, {
