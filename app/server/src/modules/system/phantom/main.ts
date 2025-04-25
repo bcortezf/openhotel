@@ -18,7 +18,14 @@ export const phantom = () => {
     } as WorkerProps);
   };
 
+  const capture = (room) => {
+    $worker.emit("capture-private-room", {
+      room,
+    });
+  };
+
   return {
     load,
+    capture,
   };
 };

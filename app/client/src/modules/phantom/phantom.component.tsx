@@ -465,6 +465,7 @@ const Test = () => {
     () =>
       room?.users?.map((user) => (
         <CharacterComponent
+          key={user.accountId}
           bodyAction={CharacterBodyAction.IDLE}
           bodyDirection={user.bodyDirection}
           headDirection={user.bodyDirection}

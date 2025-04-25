@@ -394,6 +394,7 @@ const room = {
   let $envs: Envs;
   let executablePath: string = "";
   let browser;
+  let page;
 
   const load = async ({ envs, config }: WorkerProps) => {
     $config = config;
@@ -443,7 +444,7 @@ const room = {
         "--enable-unsafe-swiftshader",
       ],
     });
-    const page = await browser.newPage();
+    page = await browser.newPage();
     await page.setViewport({ width: 256, height: 256 });
     await page.setRequestInterception(true);
 
@@ -458,11 +459,12 @@ const room = {
       // console.log(req.url());
       await req.continue();
     });
+  };
 
-    await page.goto(
-      "http://localhost:1994/phantom?roomId=01JRZPVM0KF806NRNWK3QASTF7",
-      {},
-    );
+  const capturePrivateRoom = async ({ id, room }) => {
+    // serverWorker.emit(id)
+
+    await page.goto("http://localhost:1994/phantom", {});
 
     await page.evaluate((data) => {
       localStorage.setItem("room", JSON.stringify(data));
@@ -487,4 +489,6 @@ const room = {
   };
 
   serverWorker.on("start", load);
+
+  serverWorker.on("capture-private-room", capturePrivateRoom);
 })();

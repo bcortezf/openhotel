@@ -77,6 +77,7 @@ export const System = (() => {
 
     game: $game,
     proxy: $proxy,
+    phantom: $phantom,
     tasks: $tasks,
     db: $db,
     onet: $onet,
